@@ -13,9 +13,9 @@ const images = [
 function downloadImage(URL){
 	return new Promise((resolve,reject)=>{
 		const image = new Image();
-		image.src = URL;
 		image.onload = ()=>resolve(image);
-		image.onerror = ()=>reject(`Failed to load and image:{${URL}}`);
+		image.onerror = ()=>reject(`Failed to load image: ${URL}`);
+		image.src = URL;
 	})
 }
 function downloadImages(){
@@ -23,14 +23,14 @@ function downloadImages(){
 	errorDiv.textContent = "";
 	loader.style.display = "block";
 	Promise.all(images.map(image=>downloadImage(image.url))).then((loadedImages)=>{
-		loader.style.display = "none";
 		loadedImages.forEach((image)=>{
 			output.appendChild(image);
 		})
 		
 	}).catch((err)=>{
-		loader.style.display = "none";
 		errorDiv.textContent = err;
-	});
+	}).finally(()=>{
+		loader.style.display="none";
+	})
 }
 btn.addEventListener("click",downloadImages);
